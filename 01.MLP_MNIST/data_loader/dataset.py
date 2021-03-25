@@ -3,36 +3,42 @@ import glob
 from PIL import Image
 import numpy as np
 import pandas as pd 
-import torch 
-from torch.utils.data import Dataset
-from torchvision import transforms
+import torch
+from torch.utils.data import dataset 
+# from torch.utils.data import Dataset, dataset
+from torchvision import transforms, datasets
 
-class NotMNISTDataset(Dataset):
-    def __init__(self, root_dir, transform=None):
-        self.root_dir = root_dir 
-        self.transform = transform
-        self.annotations = self._get_annotations()
-        self.label = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6,
-                "H": 7, "I": 8, "J": 9}
+# class NotMNISTDataset(Dataset):
+#     def __init__(self, root_dir, transform=None):
+#         self.root_dir = root_dir 
+#         self.transform = transform
+#         self.annotations = self._get_annotations()
+#         self.label = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6,
+#                 "H": 7, "I": 8, "J": 9}
 
-    def __len__(self):
-        return len(self.annotations) 
+#     def __len__(self):
+#         return len(self.annotations) 
 
-    def __getitem__(self, index):
-        image_path = os.path.join(self.root_dir, self.annotations.iloc[index, 1], self.annotations.iloc[index, 0])
-        image = Image.open(image_path)
-        target = torch.tensor(int(self.label[self.annotations.iloc[index, 1]]))
+#     def __getitem__(self, index):
+#         image_path = os.path.join(self.root_dir, self.annotations.iloc[index, 1], self.annotations.iloc[index, 0])
+#         image = Image.open(image_path)
+#         target = torch.tensor(int(self.label[self.annotations.iloc[index, 1]]))
 
-        if self.transform:
-            image = self.transform(image)
-        return image, target
+#         if self.transform:
+#             image = self.transform(image)
+#         return image, target
 
-    def _get_annotations(self):
-        df = pd.DataFrame()
-        for target in os.listdir(self.root_dir):
-            image_list = glob.glob(os.path.join(self.root_dir, target, '*.png'))
-            df = df.append([[os.path.basename(i), os.path.dirname(i)[-1]] for i in image_list])
-        return df
+#     def _get_annotations(self):
+#         df = pd.DataFrame()
+#         for target in os.listdir(self.root_dir):
+#             image_list = glob.glob(os.path.join(self.root_dir, target, '*.png'))
+#             df = df.append([[os.path.basename(i), os.path.dirname(i)[-1]] for i in image_list])
+#         return df
+
+def get_mnist(root_dir='./data', transform=None):
+    mnist_train = datasets.MNIST(root=root_dir, train=True, transform=transform, download=True)
+    mnist_test = datasets.MNIST(root=root_dir, train=False, transform=transforms.ToTensor(), download=True )
+    return mnist_train, mnist_test 
 
 def get_augmentation(size=224, use_flip=True, use_color_jitter=False, use_gray_scale=False, use_normalize=False):
     resize_crop = transforms.RandomResizedCrop(size=size)
