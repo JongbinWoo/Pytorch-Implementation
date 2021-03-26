@@ -9,8 +9,10 @@ from config import get_config
 #model
 from model.model import MLP
 from model import loss
-from model import optimizer 
+from model.optimizer import get_optimizer 
 
+#trianer
+from trainer.trainer import Trainer
 # %%
 config = get_config()
 # %%
@@ -21,7 +23,12 @@ train_loader = get_loader(train_dataset, batch_size=config.TRAIN.BATCH_SIZE, shu
 test_loader = get_loader(test_dataset, batch_size=config.TRAIN.BATCH_SIZE, shuffle=True)
 # %%
 mlp = MLP(input_features=784, hidden_size=256, output_features=config.DATASET.NUM_CLASSES)
-optimizer = optimizer.get_optimizer(config.MODEL.OPTIM, config.TRAIN.BASE_LR, mlp.parameters())
+optimizer = get_optimizer(optimizer_name = config.MODEL.OPTIM, 
+                                    lr=config.TRAIN.BASE_LR, 
+                                    model=mlp)
 import torch.nn as nn        ##
 loss = nn.CrossEntropyLoss() ##
+# %%
+trainer = Trainer(mlp, optimizer, loss,  config, train_loader, test_loader)
+trainer.train()
 # %%

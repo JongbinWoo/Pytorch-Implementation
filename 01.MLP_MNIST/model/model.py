@@ -13,6 +13,7 @@ class MLP(nn.Module):
         self.linear2 = nn.Linear(hidden_size, output_features)
         
     def forward(self, x):
+        x = x.view(-1, 28*28)
         x = self.linear1(x)
         x = F.relu(x)
         x = self.linear2(x)

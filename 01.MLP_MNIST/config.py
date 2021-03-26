@@ -29,10 +29,11 @@ def get_config():
     config.DATASET.NUM_CLASSES = 10
     config.DATASET.RATIO = 0.3
 
-    config.TRAIN.AUGMENTATION = {'size': 224,
-                                 'use_flip': True,
+    config.TRAIN.AUGMENTATION = {'size': 28,
+                                 'use_flip': False,
                                  'use_color_jitter': False,
-                                 'use_normalize:': True}
+                                 'use_normalize': False}
+                                 
     config.TRAIN.EPOCH = 10 #args.epochs
     config.TRAIN.BATCH_SIZE = 256 # args.batch_size
     config.TRAIN.BASE_LR = 0.001 #args.lr 
