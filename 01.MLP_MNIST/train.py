@@ -1,8 +1,7 @@
+#%%
 import torch
 import argparse
 
-
-#%%
 #data
 from data_loader.data_loader import get_loader
 from data_loader.dataset import get_mnist, get_augmentation
@@ -18,8 +17,10 @@ from model.optimizer import get_optimizer
 #trianer
 from trainer.trainer import Trainer
 
+
 SEED = 42
 torch.manual_seed(SEED)
+
 # %%
 def main(config):
     transform = get_augmentation(**config.TRAIN.AUGMENTATION)
@@ -37,10 +38,9 @@ def main(config):
     loss = nn.CrossEntropyLoss() ##
     
     trainer = Trainer(mlp, optimizer, loss,  config, train_loader, test_loader)
-    # trainer.train()
-# %%
+    trainer.train()
     
-
+# %%
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='MLP')
     parser.add_argument('--epochs', default=10, type=int)
