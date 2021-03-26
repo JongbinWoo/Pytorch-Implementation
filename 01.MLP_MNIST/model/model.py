@@ -18,3 +18,11 @@ class MLP(nn.Module):
         x = F.relu(x)
         x = self.linear2(x)
         return x
+    
+    def __str__(self):
+        num_parameters = 0
+        for params in self.parameters():
+            if params.requires_grad:
+                num_parameters += len(params.reshape(-1))
+        
+        return super().__str__() + f'\n\nNumber of Trainable Parameters: {num_parameters:,d}\n'

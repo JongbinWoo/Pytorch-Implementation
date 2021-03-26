@@ -29,6 +29,7 @@ def main(config):
     test_loader = get_loader(test_dataset, batch_size=config.TRAIN.BATCH_SIZE, shuffle=True)
     
     mlp = MLP(input_features=784, hidden_size=256, output_features=config.DATASET.NUM_CLASSES)
+    print('[Model Info]\n\n', mlp)
     optimizer = get_optimizer(optimizer_name = config.MODEL.OPTIM, 
                                         lr=config.TRAIN.BASE_LR, 
                                         model=mlp)
@@ -36,7 +37,7 @@ def main(config):
     loss = nn.CrossEntropyLoss() ##
     
     trainer = Trainer(mlp, optimizer, loss,  config, train_loader, test_loader)
-    trainer.train()
+    # trainer.train()
 # %%
     
 
