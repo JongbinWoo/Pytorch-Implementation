@@ -1,3 +1,7 @@
+import torch
+import argparse
+
+
 #%%
 #data
 from data_loader.data_loader import get_loader
@@ -13,22 +17,37 @@ from model.optimizer import get_optimizer
 
 #trianer
 from trainer.trainer import Trainer
-# %%
-config = get_config()
-# %%
-transform = get_augmentation(**config.TRAIN.AUGMENTATION)
-train_dataset, test_dataset = get_mnist(config.DATASET.ROOT, transform=transform)
 
-train_loader = get_loader(train_dataset, batch_size=config.TRAIN.BATCH_SIZE, shuffle=True)
-test_loader = get_loader(test_dataset, batch_size=config.TRAIN.BATCH_SIZE, shuffle=True)
+SEED = 42
+torch.manual_seed(SEED)
 # %%
-mlp = MLP(input_features=784, hidden_size=256, output_features=config.DATASET.NUM_CLASSES)
-optimizer = get_optimizer(optimizer_name = config.MODEL.OPTIM, 
-                                    lr=config.TRAIN.BASE_LR, 
-                                    model=mlp)
-import torch.nn as nn        ##
-loss = nn.CrossEntropyLoss() ##
+def main(config):
+    transform = get_augmentation(**config.TRAIN.AUGMENTATION)
+    train_dataset, test_dataset = get_mnist(config.DATASET.ROOT, transform=transform)
+
+    train_loader = get_loader(train_dataset, batch_size=config.TRAIN.BATCH_SIZE, shuffle=True)
+    test_loader = get_loader(test_dataset, batch_size=config.TRAIN.BATCH_SIZE, shuffle=True)
+    
+    mlp = MLP(input_features=784, hidden_size=256, output_features=config.DATASET.NUM_CLASSES)
+    optimizer = get_optimizer(optimizer_name = config.MODEL.OPTIM, 
+                                        lr=config.TRAIN.BASE_LR, 
+                                        model=mlp)
+    import torch.nn as nn        ##
+    loss = nn.CrossEntropyLoss() ##
+    
+    trainer = Trainer(mlp, optimizer, loss,  config, train_loader, test_loader)
+    trainer.train()
 # %%
-trainer = Trainer(mlp, optimizer, loss,  config, train_loader, test_loader)
-trainer.train()
-# %%
+    
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='MLP')
+    parser.add_argument('--epochs', default=10, type=int)
+    parser.add_argument('--batch_size', default=256, type=int)
+    parser.add_argument('--lr', default=0.001, type=float)
+
+    args = parser.parse_args()
+
+    config = get_config(args)
+
+    main(config)

@@ -1,4 +1,3 @@
-import argparse
 import torch
 
 class AttributeDict(dict):
@@ -14,14 +13,7 @@ class ConfigTree:
         self.MODEL = AttributeDict()
         self.KD = AttributeDict()
 
-def get_config():
-    # parser = argparse.ArgumentParser(description='MLP')
-    # parser.add_argument('--epochs', default=10, type=int)
-    # parser.add_argument('--batch_size', default=256, type=int)
-    # parser.add_argument('--lr', default=0.001, type=float)
-
-    # args = parser.parse_args()
-
+def get_config(args):
     config = ConfigTree()
     config.SYSTEM.DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     config.SAVEDIR = './data/outputs'
@@ -34,9 +26,9 @@ def get_config():
                                  'use_color_jitter': False,
                                  'use_normalize': False}
                                  
-    config.TRAIN.EPOCH = 10 #args.epochs
-    config.TRAIN.BATCH_SIZE = 256 # args.batch_size
-    config.TRAIN.BASE_LR = 0.001 #args.lr 
+    config.TRAIN.EPOCH = args.epochs
+    config.TRAIN.BATCH_SIZE = args.batch_size
+    config.TRAIN.BASE_LR = args.lr 
     config.TRAIN.PERIOD = 3
 
     config.MODEL.OPTIM = 'Adam'
