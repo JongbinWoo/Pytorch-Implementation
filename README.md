@@ -1,4 +1,4 @@
-# Pytorch-Implementation
+# Pytorch-Template
 Pytorch implementation of DL models
 
 |Number|Model|Dataset|Link|
